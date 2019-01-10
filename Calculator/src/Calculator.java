@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Calculator {
 
 	public static void main(String[] args) {
-		// Explain what we will be doing.
+		// Explain what we will be doing..
 		System.out.println("I can perform calculations!");
 		System.out.println("Add, subtract, multiply and divide.");
 		System.out.print("Please provide a number: ");
