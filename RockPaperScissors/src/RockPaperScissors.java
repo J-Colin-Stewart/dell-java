@@ -24,24 +24,25 @@ public class RockPaperScissors {
 	// Get player choice and return it.
 	public static String getPlayerChoice() {
 		Scanner reader = new Scanner(System.in);
-		String selection = reader.next();
-		if (selection.equalsIgnoreCase("rock") || selection.equalsIgnoreCase("paper") || selection.equalsIgnoreCase("scissors")){
-			String playerRPS = selection;
+		String playerRPS = reader.next();
+		if (playerRPS.equalsIgnoreCase("rock") || playerRPS.equalsIgnoreCase("paper") || playerRPS.equalsIgnoreCase("scissors")){
+			return playerRPS;
 		} 
-		if (selection.equalsIgnoreCase("global thermonuclear war")) {
+		if (playerRPS.equalsIgnoreCase("global thermonuclear war")) {
 			System.out.println("A STRANGE GAME.");
 			System.out.println("THE ONLY WINNING MOVE IS");
 			System.out.println("NOT TO PLAY.");
 			System.out.println("HOW ABOUT A NICE GAME OF ROCK, PAPER, SCISSORS?");
+			reader.close();
 			getPlayerChoice();
 		} 
 		else {
 			System.out.println("Not a valid choice. Please try again.");
+			reader.close();
 			getPlayerChoice();
 		}
-		return playerRPS;
 		reader.close();
-		
+		return playerRPS;			
 	}
 		
 	// Randomly choose a hand for computer and return it as a string.
