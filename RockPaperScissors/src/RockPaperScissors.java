@@ -4,10 +4,9 @@ import java.util.Scanner;
 public class RockPaperScissors {
 
 	public static void main(String[] args) {
-		// Introduction, set up for a nerd joke.
-		System.out.println("SHALL WE PLAY A GAME?");
-		System.out.println("I only play Rock, Paper Scissors.");
-		System.out.print("So... Rock, paper, or scissors? ");
+		// Introduction.
+		System.out.println("Let's play Rock, Paper Scissors.");
+		System.out.print("Do you choose Rock, Paper or Scissors? ");
 		letsPlay();
 	}
 	
@@ -21,28 +20,17 @@ public class RockPaperScissors {
 		System.out.print(winMessage);
 	}
 		
-	// Get player choice and return it.
+	// Get player choice input and return it. If not equal to rock, paper or scissors, will ask until valid choice given.
 	public static String getPlayerChoice() {
 		Scanner reader = new Scanner(System.in);
 		String playerRPS = reader.next();
-		if (playerRPS.equalsIgnoreCase("rock") || playerRPS.equalsIgnoreCase("paper") || playerRPS.equalsIgnoreCase("scissors")){
-			return playerRPS;
-		} 
-		if (playerRPS.equalsIgnoreCase("global thermonuclear war")) {
-			System.out.println("A STRANGE GAME.");
-			System.out.println("THE ONLY WINNING MOVE IS");
-			System.out.println("NOT TO PLAY.");
-			System.out.println("HOW ABOUT A NICE GAME OF ROCK, PAPER, SCISSORS?");
-			reader.close();
-			getPlayerChoice();
-		} 
-		else {
+		while (!(playerRPS.equalsIgnoreCase("rock") || playerRPS.equalsIgnoreCase("paper") || playerRPS.equalsIgnoreCase("scissors"))){
 			System.out.println("Not a valid choice. Please try again.");
-			reader.close();
-			getPlayerChoice();
+			System.out.print("Rock, Paper or Scissors? ");
+			playerRPS = reader.next();
 		}
 		reader.close();
-		return playerRPS;			
+		return playerRPS;
 	}
 		
 	// Randomly choose a hand for computer and return it as a string.
@@ -62,7 +50,7 @@ public class RockPaperScissors {
 		 return computerRPS;
 	}
 	
-	// Compare choices and declare a winner.
+	// Compare choices and declare a winner (verbose).
 	public static String getWinner(String playerChoice, String computerChoice) {
 		if (playerChoice.equalsIgnoreCase("rock") && computerChoice.equalsIgnoreCase("paper")) {
 			System.out.println("Paper covers Rock. ");
