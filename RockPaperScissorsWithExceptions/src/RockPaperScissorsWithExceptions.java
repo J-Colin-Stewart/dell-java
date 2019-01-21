@@ -88,7 +88,7 @@ public class RockPaperScissorsWithExceptions {
 		}
 		if (playerChoice.equalsIgnoreCase("rock") && computerChoice.equalsIgnoreCase("scissors")) {
 			System.out.println("Rock smashes Scissors. ");
-			
+			return("Player wins!");
 		}
 		if (playerChoice.equalsIgnoreCase("paper") && computerChoice.equalsIgnoreCase("rock")) {
 			System.out.println("Paper covers Rock. ");
