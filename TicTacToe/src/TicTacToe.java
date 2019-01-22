@@ -12,7 +12,7 @@ public class TicTacToe {
 			{'3', ' ', ' ', '|', ' ', '|', ' '}
 			};
 	
-	// movePlaceHolder is a global (to class) variable 
+	// movePlaceHolder is also a global (to class) variable, for same reason. 
 	public static char movePlaceHolder = '!';
 	
 	// movesLeft is a global (to class) variable to track when no moves are left (Cat's game).
@@ -40,9 +40,9 @@ public class TicTacToe {
 	public static void letsPlay() {
 		boolean winner = false;		
 		char currentPlayer = 'X';
-		Scanner reader = new Scanner(System.in);
+		Scanner reader = new Scanner(System.in); // Finally determined I had to declare the Scanner out here and pass it.
 		while (!(winner)) {
-			getPlayerMove(currentPlayer, reader); // Finally determined I had to declare the Scanner out here and pass it. If closed within getPlayerMove() it won't re-open on next turn for some reason.
+			getPlayerMove(currentPlayer, reader); // If reader is closed within getPlayerMove() it won't re-open on next turn for some reason.
 			printBoard();
 			movesLeft = movesLeft -1;
 			winner = checkForWin(currentPlayer);			
@@ -93,7 +93,7 @@ public class TicTacToe {
 		}
 	}
 	
-	// Validates the entry of row and column. If invalid, inner loop in getPlayerMove() repeats until valid.
+	// Validates the row and column selection. If not valid, inner loop in getPlayerMove() repeats until valid.
 	public static boolean isMoveValid(String chosenRow, String chosenCol) {
 		boolean isValid = false;
 		if ((chosenRow.equals("1")) && (chosenCol.equalsIgnoreCase("a"))) {
@@ -139,7 +139,7 @@ public class TicTacToe {
 		return isLegal;
 	}
 	
-	// This method only runs once the move has been verified as both valid and legal. Updates the board with new move.
+	// This method updates the board with player move, once verified to be valid and legal by other helper methods.
 	public static void updateBoard(String chosenRow, String chosenCol, char currentPlayer) {
 		if ((chosenRow.equals("1")) && (chosenCol.equalsIgnoreCase("a"))) {
 			board[1][2] = currentPlayer;
