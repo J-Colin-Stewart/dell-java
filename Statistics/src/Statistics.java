@@ -50,7 +50,7 @@ public class Statistics {
 			arrayTotal += sortedArray[i];
 		}
 		System.out.println("Amount of numbers provided: " + sortedArray.length);
-		System.out.println("Average value: " + (arrayTotal / sortedArray.length));
+		System.out.println("Average value: " + ((float)arrayTotal / (float)sortedArray.length));
 		System.out.println("Sum of all values: " + arrayTotal);
 	}
 	
