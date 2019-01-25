@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class GradeBook {
@@ -51,8 +52,9 @@ public class GradeBook {
 		for (int i = 0; i < names.size(); i++) {
 			namePlaceHolder = names.get(i);
 			gradesPlaceHolder = grades.get(i);
+			float avgDivisor = getAvgDivisor(gradesPlaceHolder);
 			Integer gradesTotal = splitAndtotal(gradesPlaceHolder);
-			gradeAvgPlaceHolder = ((float)gradesTotal / (float)gradesPlaceHolder.length());
+			gradeAvgPlaceHolder = ((float)gradesTotal / avgDivisor);
 			namesAndAverages.put(namePlaceHolder, gradeAvgPlaceHolder);
 		}
 		return namesAndAverages;
@@ -67,11 +69,18 @@ public class GradeBook {
 		for (int i = 0; i < splitUpValues.length; i++) {
 			Integer num = Integer.parseInt(splitUpValues[i]);
 			valuesParsed[i] = num;
-		} 
-		for (int i = 0; i < valuesParsed.length; i++) {
-			sumOfGrades += valuesParsed[i];
+		}
+		int[] intArrayOut = Arrays.stream(valuesParsed).mapToInt(Integer::intValue).toArray();		
+		for (int i = 0; i < intArrayOut.length; i++) {
+			sumOfGrades += intArrayOut[i];
 		}
 		return sumOfGrades;
+	}
+	
+	public static float getAvgDivisor(String gradesPlaceHolder) {
+		String[] splitUpValues = gradesPlaceHolder.split(",");
+		float divideByThis = splitUpValues.length;
+		return divideByThis;
 	}
 	
 	// Display the names and grade averages.
