@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 
 public class GradeBook {
 	
@@ -18,26 +19,35 @@ public class GradeBook {
 
 	// Determines how many students will be entered, which determines overall size of the HashMap.
 	public static int buildList(Scanner reader) {
-		System.out.print("How many students? ");
-		Integer studentAmt = reader.nextInt();
+		int studentAmt = 0;
+		while (studentAmt <= 0) {
+			try {
+				System.out.print("How many students? ");
+				studentAmt = reader.nextInt();
+				} catch(InputMismatchException e) {
+					System.out.println("Invalid entry - please enter a number.");
+					reader.nextLine();
+				}
+			}				
 		return studentAmt;
 	}
 	
 	// Creates the initial HashMap Keys (student names) and Values (A list of their grades, separated by commas).
 	public static HashMap<String, String> getInfo(Integer thisMany, Scanner reader) {
-		boolean askForInput = true;
 		HashMap<String, String> namesAndGrades = new HashMap<>();
-		while (askForInput) {
-			System.out.print("Name of student: ");
-			String name = reader.next();
-			System.out.print("Grades for " + name + ", separated by commas (ex: 100,95,80): ");
-			String grades = reader.next();
-			namesAndGrades.put(name, grades);
-			thisMany = thisMany - 1;
-			if (thisMany == 0) {
-				askForInput = false;
+		for (int i = 0; i < thisMany; i++) {
+			String grades = "";
+			System.out.print("Name of student #" + (i+1) +" : ");
+			reader.nextLine();
+			String name = reader.nextLine();
+			boolean validEntries = false;
+			while (!validEntries) {
+				System.out.print("Grades for " + name + ", separated by commas (ex: 100,95,80): ");
+				grades = reader.nextLine();
+				validEntries = validateGradeEntry(grades);
 			}
-		}
+			namesAndGrades.put(name, grades);
+		}		
 		return namesAndGrades;
 	}
 	
@@ -61,7 +71,7 @@ public class GradeBook {
 	
 	}
 	
-	// Helper method to split the list of grades into an array, add all grades together and return the total.
+	// Split the list of grades into an array, add all grades together and return the total.
 	public static Integer splitAndtotal(String gradesPlaceHolder) {
 		Integer sumOfGrades = 0;
 		String[] splitUpValues = gradesPlaceHolder.split(",");
@@ -77,10 +87,33 @@ public class GradeBook {
 		return sumOfGrades;
 	}
 	
+	// Gives the divisor for the grade averaging operation in getAvg().
 	public static float getAvgDivisor(String gradesPlaceHolder) {
 		String[] splitUpValues = gradesPlaceHolder.split(",");
 		float divideByThis = splitUpValues.length;
 		return divideByThis;
+	}
+	
+	// Makes sure the grade entries are all integers between 0 and 100
+	public static boolean validateGradeEntry(String grades) {
+		boolean gradesAreValid = true;
+		String[] splitUpValues = grades.split(",");
+		for (int i = 0; i < splitUpValues.length; i++) {
+			try {
+				Integer num = Integer.parseInt(splitUpValues[i]);
+				if ((!(num >= 0)) || (!(num <= 110))) {
+					System.out.println("One of your grade entries is out of normal grade range. Try again.");
+					gradesAreValid = false;
+					break;				
+				}
+			} catch(NumberFormatException e) {
+				System.out.println("One of your grade entries is not a number or you used a space. Try again.");
+				gradesAreValid = false;
+				break;
+			} 
+				
+		}
+		return gradesAreValid;
 	}
 	
 	// Display the names and grade averages.
