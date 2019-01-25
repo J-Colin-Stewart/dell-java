@@ -26,9 +26,10 @@ public class GradeBook {
 				studentAmt = reader.nextInt();
 				} catch(InputMismatchException e) {
 					System.out.println("Invalid entry - please enter a number.");
-					reader.nextLine();
+					reader.nextLine(); // This is a reset, needed to make nextInt replay correctly if exception throws.
 				}
-			}				
+			}
+		reader.nextLine(); // This is a line reset, needed after int input to make the first student name entry work right.
 		return studentAmt;
 	}
 	
@@ -37,8 +38,7 @@ public class GradeBook {
 		HashMap<String, String> namesAndGrades = new HashMap<>();
 		for (int i = 0; i < thisMany; i++) {
 			String grades = "";
-			System.out.print("Name of student #" + (i+1) +" : ");
-			reader.nextLine();
+			System.out.print("Name of student #" + (i+1) +" : ");			
 			String name = reader.nextLine();
 			boolean validEntries = false;
 			while (!validEntries) {
@@ -94,7 +94,7 @@ public class GradeBook {
 		return divideByThis;
 	}
 	
-	// Makes sure the grade entries are all integers between 0 and 100
+	// Makes sure the grade entries are all integers, that there are no spaces, and that the value is between 0 and 110.
 	public static boolean validateGradeEntry(String grades) {
 		boolean gradesAreValid = true;
 		String[] splitUpValues = grades.split(",");
