@@ -46,7 +46,7 @@ public class Calculator {
 	// Outputs the quotient of the provided values.
 	public static void divide(int valueOne, int valueTwo) {
 		// input int values are converted to double so the calculated value is not rounded.
-		double divided = (double)valueOne / (double)valueTwo;
+		float divided = (float)valueOne / (float)valueTwo;
 		System.out.println(valueOne + " / " + valueTwo + " = " + divided);
 	}
 }
