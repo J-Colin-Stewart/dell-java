@@ -3,11 +3,31 @@ import java.util.InputMismatchException;
 
 public class ParkingGarage {
 	
-	public boolean[] parkingSpaces;
-	public Car[] parkedCars;
+	public boolean[] parkingSpaces; // Attribute array to determine if parking spots are in use.
+	public Car[] parkedCars; // To hold attributes of car in each space, set to same index as parking space.
 	
 	public ParkingGarage() {}
-	
+	// Helper method to dynamically update available spaces in GarageManager main, or show when not set up.
+	public String availableSpaces() {
+		int spacesCounter = 0;
+		String spacesAvailable = "";		
+		try {			
+			for (int i = 0; i < this.parkingSpaces.length; i++) {
+				if (this.parkingSpaces[i] == false) {
+					spacesCounter = spacesCounter + 1;
+				}
+			}
+			if (spacesCounter == 0) {
+				spacesAvailable = "*** LOT IS FULL ***";
+			} else if (spacesCounter != 0) {			
+				spacesAvailable = spacesCounter + " spaces available";
+			}			
+		} catch (NullPointerException e) {
+			spacesAvailable = "PLEASE SET LOT SIZE (OPTION 4)";
+		}
+		return spacesAvailable;
+	}	
+	// The main menu. Returns selection to main GarageManager method to perform requested operation.
 	public static int mainMenu(Scanner menuChoice) {
 		int selection = 0;
 		boolean validMenu = false;
@@ -29,8 +49,37 @@ public class ParkingGarage {
 		}
 		return selection;
 	}
-	
-	public static int parkCar(ParkingGarage thisLot, Scanner pass) {
+	// Lot selection method, sends selection to parkCar() helper method and gives parking instructions to attendant.
+	public static void sendToPark(ParkingGarage firstLot, ParkingGarage secondLot, ParkingGarage thirdLot, Scanner pickLot) {
+		boolean validLotPark = false;
+		int parkingSpace = 9999;
+		int parkingLot = 0;
+		while (!(validLotPark)) {
+			try {
+				System.out.print("Check car in to which lot (1, 2, or 3)? ");
+				parkingLot = pickLot.nextInt();
+				if (parkingLot == 1) {
+					parkingSpace = parkCar(firstLot, pickLot);
+				} else if (parkingLot == 2) {
+					parkingSpace = parkCar(secondLot, pickLot);
+				} else if (parkingLot == 3) {
+					parkingSpace = parkCar(thirdLot, pickLot);
+				}	else {
+					throw new InputMismatchException();
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("!!!Invalid entry - Please try again.");
+				pickLot.nextLine();
+			} finally {
+				validLotPark = true;
+				if (parkingSpace != 9999) { // Bypasses parking attendant instruction if parkCar() fails to function normally.
+					System.out.println("PARKING ATTENDANT: PLEASE PARK CAR IN LOT " + parkingLot + ", SPACE " + parkingSpace);							
+				}
+			}
+		}
+	}
+	// Private helper method to mark space in use and get attributes of Car to be parked. Returns space number to sendToPark().
+	private static int parkCar(ParkingGarage thisLot, Scanner pass) {
 		int valetToThisSpace = 9999;
 		try {
 			Car toPark = new Car();		
@@ -55,7 +104,7 @@ public class ParkingGarage {
 		}
 		return valetToThisSpace;
 	}
-	
+	// Method to retrieve parked car from Valet Ticket #. If entry is valid, uses helper method clearParkingSpace() to confirm check-out.
 	public static void retrieveAndClear(ParkingGarage firstLot, ParkingGarage secondLot, ParkingGarage thirdLot, Scanner findTicket) {
 		boolean validTicket = false;
 		while (!(validTicket)) {		
@@ -67,37 +116,50 @@ public class ParkingGarage {
 				if (firstLot.parkingSpaces == null) {
 					System.out.println("Lot 1 is not set up! Searching lot 2...");
 				} else {
-					for (int i = 0; i < firstLot.parkingSpaces.length; i++) {
-						if (firstLot.parkedCars[i].getValetTicket() == ticketFinder) {
-							ticketFound = true;
-							int lotID = 1;
-							clearParkingSpace(firstLot, lotID, i, findTicket);
-							return;
+					try {
+						for (int i = 0; i < firstLot.parkingSpaces.length; i++) {
+							if (firstLot.parkedCars[i].getValetTicket() == ticketFinder) {
+								ticketFound = true;
+								int lotID = 1;
+								clearParkingSpace(firstLot, lotID, i, findTicket);
+								return;
+							}
 						}
+					} catch (NullPointerException npe) {
+						System.out.println("Not found in lot 1. Searching lot 2...");
 					}
 				}
 				if (secondLot.parkingSpaces == null) {
 					System.out.println("Lot 2 is not set up! Searching lot 3...");
 				} else {
-					for (int i = 0; i < secondLot.parkingSpaces.length; i++) {
-						if (secondLot.parkedCars[i].getValetTicket() == ticketFinder) {
-							ticketFound = true;
-							int lotID = 2;
-							clearParkingSpace(secondLot, lotID, i, findTicket);
-							return;
+					try {
+						for (int i = 0; i < secondLot.parkingSpaces.length; i++) {
+							if (secondLot.parkedCars[i].getValetTicket() == ticketFinder) {
+								ticketFound = true;
+								int lotID = 2;
+								clearParkingSpace(secondLot, lotID, i, findTicket);
+								return;
+							}
 						}
+					} catch (NullPointerException npe) {
+						System.out.println("Not found in lot 2. Searching lot 3...");
 					}
 				}
 				if (thirdLot.parkingSpaces == null) {
-					System.out.println("Lot 3 is not set up! No cars are parked! Returning to Main Menu.");
+					System.out.println("Lot 3 is not set up! Returning to Main Menu.");
 				} else {
-					for (int i = 0; i < thirdLot.parkingSpaces.length; i++) {
-						if (thirdLot.parkedCars[i].getValetTicket() == ticketFinder) {
-							ticketFound = true;
-							int lotID = 3;
-							clearParkingSpace(thirdLot, lotID, i, findTicket);
-							return;
+					try {
+						for (int i = 0; i < thirdLot.parkingSpaces.length; i++) {
+							if (thirdLot.parkedCars[i].getValetTicket() == ticketFinder) {
+								ticketFound = true;
+								int lotID = 3;
+								clearParkingSpace(thirdLot, lotID, i, findTicket);
+								return;
+							}
 						}
+					} catch (NullPointerException npe) {
+						System.out.println("Not found in lot 3. Please verify ticket number.");
+						System.out.println("Returning to Main Menu.");
 					}
 				}
 				if (ticketFound == false) {
@@ -112,14 +174,14 @@ public class ParkingGarage {
 			}
 		}
 	}
-	
+	// Private helper method, uses validated request from retrieveAndClear() and confirms check-out with challenge/response, then resets the parkingSpaces and parkedCars arrays at space index.
 	private static void clearParkingSpace(ParkingGarage thisLot, int lot, int spaceNumber, Scanner confirm) {
 		boolean confirmRetrieve = false;
 		while (!(confirmRetrieve)) {
 			try {				
 				System.out.println("Ticket found - Are you sure you wish to check out");
 				System.out.println("and retrieve car for valet ticket #" + thisLot.parkedCars[spaceNumber].getValetTicket() + "?");
-				System.out.print("To confirm, type 999 and press Enter: ");
+				System.out.print("To confirm, type 999 and press Enter: "); // low-complexity challenge/response to proceed.
 				int conf = confirm.nextInt();
 				if (conf == 999) {
 					System.out.println();
@@ -131,14 +193,71 @@ public class ParkingGarage {
 				} else {
 					System.out.println();
 					System.out.println("Check out cancelled.");
+					break;
 				}
 			} catch (InputMismatchException e) {
 				System.out.println("!!! WARNING !!! Invalid entry - Please try again.");
-				confirm.nextLine();
+				confirm.nextLine(); // Necessary reset after Scanner takes a nextInt.
 			}
 		}
 	}
-	
+	// Lot selector to set currently available size. Passes lot choice to method setParkingSpaces() once selection is validated.
+	public static void setUpLot (ParkingGarage firstLot, ParkingGarage secondLot, ParkingGarage thirdLot, Scanner pickLot) {
+		boolean validLotSetup = false;
+		while (!(validLotSetup)) {
+			try {
+				System.out.print("Which lot would you like to set current size for (1, 2, or 3)? ");
+				int lotPicker = pickLot.nextInt();
+				if (lotPicker == 1) {
+					ParkingGarage.setParkingSpaces(firstLot, pickLot);
+				} else if (lotPicker == 2) {
+					ParkingGarage.setParkingSpaces(secondLot, pickLot);
+				} else if (lotPicker == 3) {
+					ParkingGarage.setParkingSpaces(thirdLot, pickLot);
+				}	else {
+					throw new InputMismatchException();
+				}
+			} catch (InputMismatchException e) {
+				System.out.println("!!!Invalid entry - Please try again.");
+				pickLot.nextLine();
+			} finally {
+				validLotSetup = true;
+			}
+		}
+	}
+	// Private helper method, sets lot size for lot selected in setUpLot(). If a lot size is already set, challenge/response to confirm data reset with attribute change.
+	private static void setParkingSpaces(ParkingGarage thisLot, Scanner spacesChoice) {
+		boolean validSpaces = false;
+		int confirmChange = 0;
+		if (thisLot.parkingSpaces != null) {
+			System.out.println();
+			System.out.println("************************************************************");
+			System.out.println("* !!! WARNING !!! Changing lot size will clear all spaces! *");
+			System.out.println("*       You will need to re-enter all parked cars          *");
+			System.out.println("*       and valet ticket numbers will be changed!          *");
+			System.out.println("************************************************************");
+			System.out.print("DO YOU STILL WISH TO CHANGE LOT SIZE? Type 97531 and press Enter to continue: ");
+			confirmChange = spacesChoice.nextInt();
+			if (confirmChange != 97531) { // Medium-complexity challenge/response to proceed, due to possibility of data loss.
+				validSpaces = true;
+			}
+		}		
+		while (!(validSpaces)) {
+			try {
+				System.out.print("How many usable spaces now in this lot? ");			
+				int thisMany = spacesChoice.nextInt();
+				validSpaces = true;			
+				boolean[] thisManySpaces = new boolean[thisMany];
+				Car[] carPlaceHolder = new Car[thisMany];
+				thisLot.parkingSpaces = thisManySpaces;
+				thisLot.parkedCars = carPlaceHolder;
+			} catch (InputMismatchException e) {
+				System.out.println("!!! WARNING !!! Invalid entry - Please try again.");
+				spacesChoice.nextLine();
+			}	
+		}
+	}
+	// Lists currently parked cars in all lots and spaces, with all accompanying attributes.
 	public static void listInventory(ParkingGarage firstLot, ParkingGarage secondLot, ParkingGarage thirdLot) {
 		int space = 0;
 		int ticket = 0;
@@ -194,68 +313,18 @@ public class ParkingGarage {
 				}
 			}
 		}		
-	}
-
-	public static void setParkingSpaces(ParkingGarage thisLot, Scanner spacesChoice) {
-		boolean validSpaces = false;
-		int confirmChange = 0;
-		if (thisLot.parkingSpaces != null) {
-			System.out.println();
-			System.out.println("************************************************************");
-			System.out.println("* !!! WARNING !!! Changing lot size will clear all spaces! *");
-			System.out.println("*       You will need to re-enter all parked cars.         *");			
-			System.out.println("************************************************************");
-			System.out.print("DO YOU STILL WISH TO CHANGE LOT SIZE? Type 97531 and press Enter to continue: ");
-			confirmChange = spacesChoice.nextInt();
-			if (confirmChange != 97531) {
-				validSpaces = true;
-			}
-		}		
-		while (!(validSpaces)) {
-			try {
-				System.out.print("How many usable spaces now in this lot? ");			
-				int thisMany = spacesChoice.nextInt();
-				validSpaces = true;			
-				boolean[] thisManySpaces = new boolean[thisMany];
-				Car[] carPlaceHolder = new Car[thisMany];
-				thisLot.parkingSpaces = thisManySpaces;
-				thisLot.parkedCars = carPlaceHolder;
-			} catch (InputMismatchException e) {
-				System.out.println("!!! WARNING !!! Invalid entry - Please try again.");
-				spacesChoice.nextLine();
-			}	
-		}
-	}
-	
-	public String availableSpaces() {
-		int spacesCounter = 0;
-		String spacesAvailable = "";		
-		try {			
-			for (int i = 0; i < this.parkingSpaces.length; i++) {
-				if (this.parkingSpaces[i] == false) {
-					spacesCounter = spacesCounter + 1;
-				}
-			}
-			if (spacesCounter == 0) {
-				spacesAvailable = "*** LOT IS FULL ***";
-			} else if (spacesCounter != 0) {			
-				spacesAvailable = spacesCounter + " spaces available";
-			}			
-		} catch (NullPointerException e) {
-			spacesAvailable = "PLEASE SET LOT SIZE (OPTION 4)";
-		}
-		return spacesAvailable;
-	}
-	
+	}	
+	// Validates main menu selection to exit program. Complex challenge/response to avoid data loss.
 	public static boolean comfirmExit(Scanner confirm) {
 		boolean exitConfirm = false;
-		int JENNY = 0;
+		int JENNY = 0; // This will make sense in a second.
 		System.out.println();
 		System.out.println("************************************************************");
 		System.out.println("* !!! WARNING !!! Exiting the program clears all check-ins *");
-		System.out.println("*       And resets the Valet Ticket counter to 100.        *");			
+		System.out.println("*       And resets the Valet Ticket counter to 100.        *");
+		System.out.println("* Use ONLY at close of business or if all lots are empty!!  *");
 		System.out.println("************************************************************");
-		System.out.print("DO YOU WISH TO EXIT AND CLOSE OUT THE DAY? Type 8675309 and press Enter to continue: ");
+		System.out.print("DO YOU WISH TO EXIT AND CLOSE OUT? Type 8675309 and press Enter to continue: "); // Challenge/response. Also haha :)
 		try {
 			JENNY = confirm.nextInt();
 		} catch (InputMismatchException e) {
@@ -263,7 +332,7 @@ public class ParkingGarage {
 			System.out.println("That isn't Jenny's number! Please re-check bathroom stall.");
 			confirm.nextLine();
 		}
-		if (JENNY == 8675309) {
+		if (JENNY == 8675309) { // JEEEENNY I GOT YOUR NUMBER
 			exitConfirm = true;
 			System.out.println();
 			System.out.println("Program exit is confirmed. Day is closed out. See you next time!");
