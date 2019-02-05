@@ -15,10 +15,11 @@ public class Car {
 	public Car() {} // Initialized null because attributes are dynamically set and null is used to reset.
 	
 	private static final AtomicInteger count = new AtomicInteger(100); // This thing is cool. Thanks Google!
-	// Assigns a valet ticket number each time a Car is instantiated, then increments the AtomicInteger count for next Car.
+	
 	public int getValetTicket() {
 		return this.ValetTicket;
 	}
+	//Each time a Car is instantiated, increments AtomicInteger by 1 and returns that value for the valet ticket number.
 	public static int setValetTicket() {
 		int valetTicket = count.incrementAndGet();
 		return valetTicket;

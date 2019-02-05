@@ -322,7 +322,7 @@ public class ParkingGarage {
 		System.out.println("************************************************************");
 		System.out.println("* !!! WARNING !!! Exiting the program clears all check-ins *");
 		System.out.println("*       And resets the Valet Ticket counter to 100.        *");
-		System.out.println("* Use ONLY at close of business or if all lots are empty!!  *");
+		System.out.println("* Use ONLY at close of business or if all lots are empty!! *");
 		System.out.println("************************************************************");
 		System.out.print("DO YOU WISH TO EXIT AND CLOSE OUT? Type 8675309 and press Enter to continue: "); // Challenge/response. Also haha :)
 		try {
