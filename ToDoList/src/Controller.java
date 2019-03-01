@@ -5,46 +5,46 @@ public class Controller {
 
 	public static void main(String[] args) {
 		
-		DAO newToDoList = new DAO();
-		boolean helpPrinted = false;
-		Scanner input = new Scanner(System.in);
-		System.out.println("TO DO LIST - A HELPFUL TASK TRACKER");
-		appStart(input, newToDoList, helpPrinted);		
-		input.close();
+		DAO newToDoList = new DAO(); // Instantiate a Data Access Object
+		boolean helpPrinted = false; // boolean to prevent re-print of main menu when detailed help is printed
+		Scanner input = new Scanner(System.in); // Open Scanner here and pass where needed
+		System.out.println("TO DO LIST - A HELPFUL TASK TRACKER"); // Title
+		appStart(input, newToDoList, helpPrinted); // Start app, hand off the Scanner, DAO and help menu boolean.
+		input.close(); // Closes Scanner when app run complete.
 	}
-	
+	// Main applicatioin run space and loop.
 	private static void appStart(Scanner in, DAO toDoList, boolean helpWasPrinted) {
-		String menuAction;
-		boolean continueRun = true;
+		String menuAction; // Placeholder for user input menu actions.
+		boolean continueRun = true; // Program run loop
 		while (continueRun) {
 			if (!helpWasPrinted) {
-				printMenu();
+				printMenu(); // Only print the main menu if help menu was not just printed.
 			}
-			helpWasPrinted = false;
-			System.out.print("What would you like to do? ");
+			helpWasPrinted = false; // Reset the help menu printed boolean for next run.
+			System.out.print("What would you like to do? "); // Request user input.
 			menuAction = in.nextLine();
-			String[] actionParts = menuAction.split(" ");
+			String[] actionParts = menuAction.split(" "); // Split input into parts with space delimiter.
 	    String action = actionParts[0].trim(); // Primary action
 	    
 	    if (action.equals("add")) {
-        toDoList.add(in);
+        toDoList.add(in); // Call add method from DAO
 	    } else if (action.equals("delete")) {
-        toDoList.delete(actionParts);
+        toDoList.delete(actionParts); // Call delete method from DAO
 	    } else if (action.equals("done")) {
-        toDoList.markDone(actionParts);
+        toDoList.markDone(actionParts); // Call the method to mark complete from DAO
 	    } else if (action.equals("list")) {
-        printList(toDoList.list(actionParts));
+        printList(toDoList.list(actionParts)); // printLIst is local, list method from DAO determines scope
 	    } else if (action.equals("quit")) {
-	    	continueRun = false;
+	    	continueRun = false; // Set program run boolean to false to exit app loop
 	    } else if (action.equals("help")) {
-	    	printHelp();
-	    	helpWasPrinted = true;
+	    	printHelp(); // Print the verbose help menu
+	    	helpWasPrinted = true; // When true, skips the standard menu print
 	    } else if(action.length() == 0 ){
     		// do nothing.
 	    }
 		}		
 	}
-	
+	// The standard menu, without verbose instructions
 	private static void printMenu(){
 		System.out.println("-----------------------------------");
     System.out.println("Valid commands: ");
@@ -56,7 +56,7 @@ public class Controller {
     System.out.println("  quit           quit the app");
     System.out.println();
   }
-	
+	// Help menu provides additional instruction/clarificaiton
 	private static void printHelp(){
 		System.out.println("-----------------------------------");
     System.out.println("Commands help: ");
@@ -68,7 +68,7 @@ public class Controller {
     System.out.println("  >quit          quit the app");
     System.out.println();
   }
-	
+	// Clean to do list printout (shamelessly stolen from checkpoint project an modified)
 	private static void printList(List<ToDoItem> entries){
     int longestItem =  7;
     for(ToDoItem entry : entries){
